@@ -26,7 +26,15 @@ export default function App() {
 
   const loadImage = useCallback((src: string, name: string) => {
     const img = new Image()
-    img.onload = () => { if (src.startsWith('blob:')) URL.revokeObjectURL(src); setImage(img); setSourceName(name); setBoxes([]); setStatus('Screenshot loaded. Detect sensitive details to review.') }
+    img.onload = () => {
+      if (src.startsWith('blob:')) URL.revokeObjectURL(src)
+      const commitImage = (loaded: HTMLImageElement) => { setImage(loaded); setSourceName(name); setBoxes([]); setStatus('Screenshot loaded. Detect sensitive details to review.') }
+      if (src.startsWith('data:image/svg+xml')) {
+        const canvas = document.createElement('canvas'); canvas.width = img.naturalWidth; canvas.height = img.naturalHeight
+        canvas.getContext('2d')!.drawImage(img, 0, 0)
+        const raster = new Image(); raster.onload = () => commitImage(raster); raster.src = canvas.toDataURL('image/png')
+      } else commitImage(img)
+    }
     img.onerror = () => setStatus('Could not open that image. Try a PNG, JPEG, or WebP screenshot.')
     img.src = src
   }, [])
@@ -44,15 +52,15 @@ export default function App() {
     if (!image) return
     setBusy(true); setStatus('Scanning text locally…')
     try {
-      const worker = await createWorker('eng', 1, { workerPath: '/tesseract/worker.min.js', langPath: '/tessdata', corePath: '/tesseract/tesseract-core', logger: m => { if (m.status === 'recognizing text') setStatus(`Reading screenshot… ${Math.round((m.progress ?? 0) * 100)}%`) } })
-      const result = await worker.recognize(image)
+      const worker = await createWorker('eng', 1, { workerPath: `${import.meta.env.BASE_URL}tesseract/worker.min.js`, langPath: `${import.meta.env.BASE_URL}tessdata`, corePath: `${import.meta.env.BASE_URL}tesseract/tesseract-core-simd-lstm.wasm.js`, gzip: false, logger: m => { if (m.status === 'recognizing text') setStatus(`Reading screenshot… ${Math.round((m.progress ?? 0) * 100)}%`) } })
+      const result = await worker.recognize(image, {}, { blocks: true })
       await worker.terminate()
       const words: WordBox[] = (result.data.blocks ?? []).flatMap(block => block.paragraphs.flatMap(paragraph => paragraph.lines.flatMap(line => line.words))).map(w => ({ text: w.text, x0: w.bbox.x0, y0: w.bbox.y0, x1: w.bbox.x1, y1: w.bbox.y1 }))
       let found = detectTextBoxes(words, enabled)
       if (enabled.face) {
         try {
-          const vision = await FilesetResolver.forVisionTasks('/mediapipe/wasm')
-          const detector = await FaceDetector.createFromOptions(vision, { baseOptions: { modelAssetPath: '/models/face_detector.tflite' }, runningMode: 'IMAGE' })
+          const vision = await FilesetResolver.forVisionTasks(`${import.meta.env.BASE_URL}mediapipe/wasm`)
+          const detector = await FaceDetector.createFromOptions(vision, { baseOptions: { modelAssetPath: `${import.meta.env.BASE_URL}models/face_detector.tflite` }, runningMode: 'IMAGE' })
           const faces = detector.detect(image).detections.map((d, i) => { const b = d.boundingBox!; return { id: `face-${i}`, kind: 'face' as const, x: b.originX, y: b.originY, w: b.width, h: b.height } })
           found = [...found, ...faces]; detector.close()
         } catch { setStatus('Text scan complete. Face model unavailable; text detections are ready.') }
@@ -83,7 +91,7 @@ export default function App() {
 
   const demo = () => loadImage(`data:image/svg+xml;charset=utf-8,${encodeURIComponent(demoSvg)}`, 'Synthetic demo')
   return <main className={light?'app light':'app'}>
-    <header className="topbar"><a className="brand" href="#" aria-label="share-safe home"><span className="brandmark"><ShieldCheck size={21}/></span><span>share<span className="brand-accent">safe</span></span></a><div className="top-actions"><span className="local-pill"><i/>On-device processing</span><button className="icon-button" onClick={()=>setLight(v=>!v)} aria-label={light?'Switch to dark theme':'Switch to light theme'}>{light?<Moon size={18}/>:<Sun size={18}/>}</button></div></header>
+    <header className="topbar"><a className="brand" href={location.protocol === 'sharesafe:' ? '/app' : '/'} aria-label="ShareSafe home"><span className="brandmark"><ShieldCheck size={21}/></span><span>share<span className="brand-accent">safe</span></span></a><div className="top-actions"><span className="local-pill"><i/>On-device processing</span><button className="icon-button" onClick={()=>setLight(v=>!v)} aria-label={light?'Switch to dark theme':'Switch to light theme'}>{light?<Moon size={18}/>:<Sun size={18}/>}</button></div></header>
     <section className="hero"><div className="eyebrow"><span/> PRIVATE BY DESIGN</div><h1>Your screenshot.<br/><em>Your business.</em></h1><p>Find and hide sensitive details before you share. Everything stays in this browser.</p></section>
     <section className="workspace">
       <aside className="panel controls"><div className="panel-heading"><div><span className="step">01</span><h2>Prepare</h2></div><span className="subtle">Choose what to find</span></div>

@@ -1,0 +1,9 @@
+{
+  "appId": "org.sharesafe.desktop",
+  "productName": "ShareSafe",
+  "asar": true,
+  "directories": { "output": "desktop/release" },
+  "files": ["desktop/main.cjs", "dist/**/*", "package.json"],
+  "win": { "target": ["zip"], "artifactName": "ShareSafe-win-x64.zip", "signAndEditExecutable": false },
+  "linux": { "target": ["AppImage"], "category": "Utility", "artifactName": "ShareSafe-x86_64.AppImage" }
+}

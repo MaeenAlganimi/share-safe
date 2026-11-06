@@ -1,12 +1,22 @@
-# share-safe
+# ShareSafe
 
-A browser-only screenshot redactor. Paste (Ctrl+V), drop, or select a screenshot, scan for email addresses, international phone numbers, Luhn-valid payment card numbers, and faces, then review and export a PNG. You can turn each detector off, choose blur or a solid cover, and draw extra rectangles by hand.
+ShareSafe is a free screenshot redactor for web and desktop. It suggests redactions for email addresses, phone number candidates, Luhn-valid payment card candidates, and faces. Review the suggestions, choose blur or a solid cover, add manual rectangles, then export a PNG or copy it to the clipboard.
+
+## Use ShareSafe
+
+- **Web app:** visit `/app` on the hosted site. The root path `/` is the product website.
+- **Linux x86_64:** [Download ShareSafe-x86_64.AppImage](https://github.com/MaeenAlganimi/share-safe/releases/latest/download/ShareSafe-x86_64.AppImage) · AppImage · 157.2 MB · SHA256 `3b83f81cbab1d19f2271ae59717ecb54a3cf4696236c6567b90807e2add0e6ba`
+- **Windows x64:** [Download ShareSafe-win-x64.zip](https://github.com/MaeenAlganimi/share-safe/releases/latest/download/ShareSafe-win-x64.zip) · portable ZIP · 172.5 MB · SHA256 `0215d9dbafd262d3f8d721f7f5ef8ef8e7c53926f9007114dd22c4fe72329e2a`
+
+The desktop builds are unsigned. Windows may show a Microsoft SmartScreen warning. macOS is coming later. Release downloads are hosted as public GitHub release assets; the files built locally are in ignored `desktop/release/`.
+
+The download names, sizes, and SHA256 values shown on the website come from [`src/ui/release-manifest.json`](src/ui/release-manifest.json). The build writes the matching full manifest to `desktop/release/manifest.json`.
 
 ## Privacy model
 
-Image decoding, OCR, face detection, redaction, and export run in your browser. The app does not upload images or need an API key. OCR language data, OCR worker/runtime, and face model/runtime are included in this repository under `public/`; app use makes no third-party runtime requests. Hosting providers may still receive ordinary page requests and their normal server logs. Clipboard image writing requires a secure context (HTTPS or localhost) and browser support.
+Image decoding, OCR, face detection, redaction, and export run on the user's device. The web app does not upload images or need an API key. OCR language data, OCR worker/runtime, and face model/runtime are bundled in this repository; the desktop app bundles the built site and these local assets for offline use. There is no analytics or remote inference service. Hosting providers still receive ordinary web page requests and their normal server logs. Clipboard image writing requires a secure context (HTTPS or localhost) and browser support.
 
-The bundled demo is an SVG-generated synthetic account card. Its names, email domain, phone, and payment card are fabricated. The sample is not evidence of detector accuracy.
+The synthetic demo is generated from fabricated details. Its `example.test` email domain, reserved example phone number, and test card are not real personal information and do not demonstrate detector accuracy.
 
 ## Run locally
 
@@ -17,7 +27,15 @@ npm install
 npm run dev
 ```
 
-Run the quality checks with `npm run lint`, `npm run typecheck`, `npm test`, and `npm run build`.
+Run checks with `npm run lint`, `npm run typecheck`, `npm test`, and `npm run build`.
+
+## Build the desktop downloads
+
+```sh
+npm run build:desktop
+```
+
+This builds the Linux x64 AppImage, tries a Windows x64 NSIS installer, and falls back to a portable Windows ZIP when NSIS cannot be built (for example, when Wine is unavailable). The resulting artifacts and full size/SHA256 manifest are written to `desktop/release/`; the website's committed copy at `src/ui/release-manifest.json` is refreshed by the build. Builds are unsigned. macOS packaging requires a Mac and is not built here.
 
 ## Limitations
 
