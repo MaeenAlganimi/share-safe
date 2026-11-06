@@ -5,8 +5,8 @@
     "sha256": "3b83f81cbab1d19f2271ae59717ecb54a3cf4696236c6567b90807e2add0e6ba"
   },
   "windows": {
-    "name": "ShareSafe-win-x64.zip",
-    "size": 180852712,
-    "sha256": "0215d9dbafd262d3f8d721f7f5ef8ef8e7c53926f9007114dd22c4fe72329e2a"
+    "name": "ShareSafe-Setup-x64.exe",
+    "size": 127548486,
+    "sha256": "a133aeff29b2adeea16ad17001b8297a9cb30ad3597f6f2715d4452ada2d0a65"
   }
 }
