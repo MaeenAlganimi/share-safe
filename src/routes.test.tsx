@@ -13,9 +13,9 @@ describe('site routes', () => {
 
   it('renders the privacy model, FAQ, screenshots, and desktop downloads', () => {
     const html = renderToStaticMarkup(<Landing />)
-    expect(html).toContain('Nothing leaves')
-    expect(html).toContain('A few clear answers.')
+    expect(html).toContain('nothing leaves it')
+    expect(html).toContain('Questions')
     expect(html).toContain('/screenshots/share-safe-demo.png')
-    expect(html).toContain('FREE DESKTOP DOWNLOAD')
+    expect(html).toContain('Download ShareSafe')
   })
 })

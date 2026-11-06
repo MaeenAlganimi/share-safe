@@ -8,7 +8,7 @@ ShareSafe is a free screenshot redactor for web and desktop. It suggests redacti
 - **Linux x86_64:** [Download ShareSafe-x86_64.AppImage](https://github.com/MaeenAlganimi/share-safe/releases/latest/download/ShareSafe-x86_64.AppImage) · AppImage · 157.2 MB · SHA256 `3b83f81cbab1d19f2271ae59717ecb54a3cf4696236c6567b90807e2add0e6ba`
 - **Windows x64:** [Download ShareSafe-win-x64.zip](https://github.com/MaeenAlganimi/share-safe/releases/latest/download/ShareSafe-win-x64.zip) · portable ZIP · 172.5 MB · SHA256 `0215d9dbafd262d3f8d721f7f5ef8ef8e7c53926f9007114dd22c4fe72329e2a`
 
-The desktop builds are unsigned. Windows may show a Microsoft SmartScreen warning. macOS is coming later. Release downloads are hosted as public GitHub release assets; the files built locally are in ignored `desktop/release/`.
+Windows is distributed as the unsigned portable ZIP `ShareSafe-win-x64.zip`, not an installer; SmartScreen may warn when opening it. Linux is the AppImage `ShareSafe-x86_64.AppImage`. macOS is coming later. Release downloads are hosted as public GitHub release assets; the files built locally are in ignored `desktop/release/`.
 
 The download names, sizes, and SHA256 values shown on the website come from [`src/ui/release-manifest.json`](src/ui/release-manifest.json). The build writes the matching full manifest to `desktop/release/manifest.json`.
 
