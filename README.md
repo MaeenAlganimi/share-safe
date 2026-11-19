@@ -1,3 +1,5 @@
+[![CI](https://github.com/MaeenAlganimi/share-safe/actions/workflows/ci.yml/badge.svg)](https://github.com/MaeenAlganimi/share-safe/actions/workflows/ci.yml)
+
 # ShareSafe
 
 ShareSafe is a free screenshot redactor for web and desktop. It suggests redactions for email addresses, phone number candidates, Luhn-valid payment card candidates, and faces. Review the suggestions, choose blur or a solid cover, add manual rectangles, then export a PNG or copy it to the clipboard.
